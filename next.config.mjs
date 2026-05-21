@@ -1,22 +1,19 @@
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+import path from 'path';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   webpack: (config, { isServer }) => {
-    const path = require('path');
-    if (!isServer) {
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        '@': path.resolve(__dirname, 'src'),
-        '@lib': path.resolve(__dirname, 'src/lib'),
-      };
-    } else {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': path.resolve(process.cwd(), 'src'),
+      '@lib': path.resolve(process.cwd(), 'src/lib'),
+    };
+    if (isServer) {
       config.externals = [...(config.externals || []), 'mongodb'];
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        '@': path.resolve(__dirname, 'src'),
-        '@lib': path.resolve(__dirname, 'src/lib'),
-      };
     }
     return config;
   },
